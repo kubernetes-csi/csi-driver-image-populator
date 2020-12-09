@@ -18,6 +18,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	"github.com/kubernetes-csi/csi-driver-image-populator/pkg/image"
@@ -36,11 +37,12 @@ var (
 func main() {
 	flag.Parse()
 
-	handle()
-	os.Exit(0)
-}
-
-func handle() {
-	driver := image.NewDriver(*driverName, *nodeID, *endpoint)
+	driver, err := image.NewDriver(*driverName, *nodeID, *endpoint)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	driver.Run()
+
+	os.Exit(0)
 }
